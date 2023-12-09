@@ -1,25 +1,12 @@
 package n01;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import static util.InputReader.*;
 
 public class c01 {
     public static void main(String[] args) {
-        List<String> lines = new ArrayList<>();
-        try(BufferedReader reader = new BufferedReader(new FileReader("./src/n01/i01.txt"));){
-            String line = reader.readLine();
-            while(line != null){
-                lines.add(line);
-                line = reader.readLine();
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        List<String> lines = readFile("n01i01.txt");
         Optional<Integer> res = lines.stream()
                 .map(e -> Arrays.stream(e.split(""))
                         .filter(d -> d.matches("[0-9]"))
@@ -30,17 +17,21 @@ public class c01 {
 
         // c02 -> one, two, three, four, five, six, seven, eight, nine
         List<String> nums = List.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
-        var r2 = lines.stream().map(e -> {
-            for (int i = 0; i < nums.size(); i++) {
-                e = e.replaceAll(nums.get(i), String.valueOf(i+1));
+        Map<String, String> values = new HashMap<>();
+        int count = 0;
+        for(String l : lines){
+            System.out.print(l + " -> ");
+            for(String n : nums){
+                l = l.replaceAll(n, n + String.valueOf(nums.indexOf(n) + 1) + n);
             }
-            return e;
-        }).map(e -> Arrays.stream(e.split(""))
-                        .filter(d -> d.matches("[0-9]"))
-                        .collect(Collectors.joining("")))
-                .map(e -> Integer.valueOf(e.split("")[0] + e.split("")[e.length()-1]))
-                .reduce(Integer::sum);
-
-        System.out.println(r2.get());
+            System.out.print(l + " -> ");
+            l = l.replaceAll("[a-zA-Z]", "");
+            System.out.print(l + " -> ");
+            l = l.split("")[0] + l.split("")[l.length()-1];
+            System.out.print(l);
+            System.out.println();
+            count += Integer.parseInt(l);
+        }
+        System.out.println(count);
     }
 }
